@@ -10,18 +10,26 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = User::create([
-            'name' => 'Admin Calaminas',
-            'email' => 'admin@calaminas.com',
-            'password' => Hash::make('admin123'),
-        ]);
-        $admin->assignRole('Administrador');
-
-        $vendedor = User::create([
-            'name' => 'Vendedor Calaminas',
-            'email' => 'vendedor@calaminas.com',
-            'password' => Hash::make('vendedor123'),
-        ]);
-        $vendedor->assignRole('Vendedor');
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@calaminas.com'],
+            [
+                'name' => 'Admin Calaminas',
+                'password' => Hash::make('admin123'),
+            ]
+        );
+        if (!$admin->hasRole('Administrador')) {
+            $admin->assignRole('Administrador');
+        }
+ 
+        $vendedor = User::firstOrCreate(
+            ['email' => 'vendedor@calaminas.com'],
+            [
+                'name' => 'Vendedor Calaminas',
+                'password' => Hash::make('vendedor123'),
+            ]
+        );
+        if (!$vendedor->hasRole('Vendedor')) {
+            $vendedor->assignRole('Vendedor');
+        }
     }
 }

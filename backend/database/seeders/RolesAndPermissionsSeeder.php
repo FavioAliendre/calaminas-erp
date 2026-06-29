@@ -52,7 +52,7 @@ class RolesAndPermissionsSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
         // Reset cached roles and permissions again to ensure the newly created permissions are loaded
@@ -61,8 +61,8 @@ class RolesAndPermissionsSeeder extends Seeder
         // Create roles and assign created permissions
 
         // Vendedor permissions
-        $vendedorRole = Role::create(['name' => 'Vendedor', 'guard_name' => 'web']);
-        $vendedorRole->givePermissionTo([
+        $vendedorRole = Role::firstOrCreate(['name' => 'Vendedor', 'guard_name' => 'web']);
+        $vendedorRole->syncPermissions([
             'view-clients',
             'create-clients',
             'edit-clients',
@@ -77,7 +77,7 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
 
         // Administrador permissions (Super Admin bypass can also be used, or assign all)
-        $adminRole = Role::create(['name' => 'Administrador', 'guard_name' => 'web']);
-        $adminRole->givePermissionTo(Permission::all());
+        $adminRole = Role::firstOrCreate(['name' => 'Administrador', 'guard_name' => 'web']);
+        $adminRole->syncPermissions(Permission::all());
     }
 }
